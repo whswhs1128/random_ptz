@@ -25,7 +25,8 @@ def random_send():
     list_32 = ['dc', 'ff', '05', '04', 00, 00, 00, 00, '14', 00, 00, 00, 00, '24', '11', '22', '33', '44', '34', '44',
                '22',
                '33', '44', '48', '31', '30', '30', '31', '30', '30', '30', '31']
-    dev = serial.Serial("COM4", 115200)
+    str_com = user_text.get()
+    dev = serial.Serial(str_com, 115200)
     if dev.is_open:
         print("port open success")
     while run_flag:
@@ -71,6 +72,7 @@ def random_send():
 # random_send()
 def start_udp_thread():
     udp_thread = threading.Thread(target=random_send, name='aa')
+    udp_thread.setDaemon(True)
     udp_thread.start()
     get_flow_id()
     global run_flag
@@ -91,6 +93,10 @@ def get_flow_id():
 root = tk.Tk()
 root.geometry("400x300")
 root.title("ptz随机坐标测试")
+
+tk.Label(root, text="请输入当前串口：").pack()
+user_text = tk.Entry()
+user_text.pack()
 
 tk.Button(root, text="开始运行", width=15, height=3, command=start_udp_thread).pack()
 tk.Button(root, text="停止运行", width=15, height=3, command=stop_udp).pack()
